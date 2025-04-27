@@ -1,34 +1,32 @@
 import React from "react";
+import loginBackground from "../../images/login.png";
 
 function LoginPage() {
     return (
         <div
             className="d-flex justify-content-center align-items-center vh-100"
             style={{
-                backgroundImage: "url('/your-background-image.jpg')",
-                backgroundSize: 'cover',
+                backgroundImage: `url(${loginBackground})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
+                backgroundColor: '#FFFFFF'
             }}
         >
+            <div className="position-absolute top-0 w-100 text-center mt-3">
+                <h6 style={{ color: '#a569ff', fontWeight: 'bold', letterSpacing: '2px' }}>I KNOW IT ALL</h6>
+            </div>
+
             <div className="card p-4 shadow" style={{ width: '100%', maxWidth: '400px', borderRadius: '20px' }}>
-                <h3 className="text-center mb-2">Create account</h3>
-                <p className="text-center mb-4 text-muted">Enter your details</p>
+                <h3 className="text-center mb-2">Login</h3>
+                <p className="text-center mb-4 text-muted">Enter your credentials</p>
 
                 <form>
                     <div className="mb-3">
                         <input
-                            type="email"
+                            type="text"
                             className="form-control"
-                            placeholder="Email"
-                            style={{ backgroundColor: '#c97bff', border: 'none', color: 'white' }}
-                        />
-                    </div>
-
-                    <div className="mb-3">
-                        <input
-                            type="password"
-                            className="form-control"
-                            placeholder="Password"
+                            placeholder="Username"
                             style={{ backgroundColor: '#c97bff', border: 'none', color: 'white' }}
                         />
                     </div>
@@ -37,7 +35,7 @@ function LoginPage() {
                         <input
                             type="password"
                             className="form-control"
-                            placeholder="Confirm Password"
+                            placeholder="Password"
                             style={{ backgroundColor: '#c97bff', border: 'none', color: 'white' }}
                         />
                     </div>
@@ -47,9 +45,16 @@ function LoginPage() {
                         className="btn w-100"
                         style={{ backgroundColor: '#e2ccff', color: 'black' }}
                     >
-                        Start
+                        Login
                     </button>
                 </form>
+
+                <div className="text-center mt-3">
+                    <span>Don't have an account? </span>
+                    <a href="/register" style={{ color: '#a569ff', fontWeight: 'bold', textDecoration: 'none' }}>
+                        Register
+                    </a>
+                </div>
             </div>
         </div>
     );

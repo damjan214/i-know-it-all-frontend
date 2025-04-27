@@ -1,15 +1,29 @@
 import React from "react";
+import registerBackground from "../../images/login.png";
+import loginBackground from "../../images/login.png";
 
 function RegisterPage() {
     return (
         <div
-            className="d-flex justify-content-center align-items-center vh-100"
+            className="d-flex flex-column justify-content-center align-items-center vh-100"
             style={{
-                backgroundImage: "url('/your-background-image.jpg')",
-                backgroundSize: 'cover',
+                backgroundImage: `url(${registerBackground})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'center',
+                backgroundColor: '#FFFFFF'
             }}
         >
+            <div className="position-absolute top-0 start-0 m-3">
+                <a
+                    href="/login"
+                    className="btn btn-light"
+                    style={{ backgroundColor: '#e2ccff', color: 'black', border: 'none', borderRadius: '10px' }}
+                >
+                    &#8592; Back
+                </a>
+            </div>
+
             <div className="position-absolute top-0 w-100 text-center mt-3">
                 <h6 style={{ color: '#a569ff', fontWeight: 'bold', letterSpacing: '2px' }}>I KNOW IT ALL</h6>
             </div>
