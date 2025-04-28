@@ -14,13 +14,13 @@ function RegisterPage() {
                 backgroundColor: '#FFFFFF'
             }}
         >
-            <div className="position-absolute top-0 start-0 m-3">
+            <div className="position-absolute top-0 start-0 p-3 mt-4">
                 <a
                     href="/login"
                     className="btn btn-light"
                     style={{ backgroundColor: '#e2ccff', color: 'black', border: 'none', borderRadius: '10px' }}
                 >
-                    &#8592; Back
+                     Back
                 </a>
             </div>
 

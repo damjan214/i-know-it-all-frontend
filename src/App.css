@@ -28,6 +28,79 @@
   color: #61dafb;
 }
 
+/* MainPage styling */
+.main-page-container {
+  padding: 50px 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Jumbotron */
+.custom-jumbotron {
+  background: linear-gradient(90deg, #c77dff, #9d4edd, #7b2cbf);
+  color: white;
+  text-align: center;
+}
+
+.jumbotron-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Search bar */
+.search-bar {
+  width: 250px;
+  max-width: 100%;
+  margin-right: 10px;
+}
+
+/* Login button */
+.btn-login {
+  background-color: #ffe066;
+  color: #4b0082;
+  font-weight: bold;
+  border: none;
+}
+
+.btn-login:hover {
+  background-color: #ffd43b;
+  color: #4b0082;
+}
+
+/* Project cards */
+.project-card {
+  border: none;
+  border-radius: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.project-card-title {
+  font-size: 1.5rem;
+  color: #5a189a;
+}
+
+.project-card-text {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.view-project-button {
+  background-color: #d0bfff;
+  color: #4b0082;
+  border: none;
+  margin-top: auto;
+}
+
+.view-project-button:hover {
+  background-color: #c77dff;
+  color: white;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
