@@ -1,0 +1,65 @@
+/* TrainingModulesPage.css */
+
+/* Overall page background */
+body {
+    background-color: #f2efff;
+}
+
+/* Modules list (left side) */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 12px;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Selected card border */
+.card.border-primary {
+    border: 2px solid #a569ff;
+}
+
+/* Progress bars */
+.progress {
+    background-color: #eee;
+}
+.progress-bar {
+    background-color: #a569ff;
+}
+
+/* "All Categories" button */
+.btn-light {
+    background-color: #e2ccff;
+    color: #6b4eff;
+    font-weight: bold;
+    border: none;
+}
+
+/* Course details (right side) */
+.course-image {
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+h4, h5 {
+    color: #6b4eff;
+    font-weight: bold;
+}
+
+p.text-danger {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Start course button */
+.btn-dark {
+    background-color: #333;
+    border-radius: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.btn-dark:hover {
+    background-color: #555;
+}

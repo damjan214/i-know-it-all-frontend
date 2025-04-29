@@ -1,0 +1,93 @@
+/* MainPage.css */
+
+/* Top header */
+.main-page-container h4 {
+    font-weight: bold;
+    color: #6b4eff; /* deep purple */
+}
+
+.main-page-container input[type="text"] {
+    border-radius: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #dcdcdc;
+    padding: 8px 16px;
+}
+
+/* Sidebar */
+nav .nav-link {
+    color: #333;
+    font-weight: 500;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+nav .nav-link.active, nav .nav-link:hover {
+    background-color: #e2ccff;
+    border-radius: 12px;
+    color: #6b4eff;
+}
+
+/* Center panel */
+.text-center img {
+    border: 3px solid #d7c7ff;
+}
+
+.text-center h2 {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.text-center p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Progress cards */
+.shadow-sm {
+    background-color: #f9f7fd;
+    transition: all 0.3s;
+}
+.shadow-sm:hover {
+    background-color: #e2ccff;
+}
+
+/* Friends list */
+.list-unstyled li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+.list-unstyled li:last-child {
+    border-bottom: none;
+}
+
+/* Buttons */
+.btn-outline-primary {
+    border-color: #a569ff;
+    color: #a569ff;
+}
+.btn-outline-primary:hover {
+    background-color: #a569ff;
+    color: white;
+}
+
+.btn-primary {
+    background-color: #a569ff;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #8a4de8;
+}
+
+/* Small text like progress */
+small {
+    color: #666;
+}
+
+/* Hide horizontal scrollbar */
+body, html {
+    overflow-x: hidden;
+}
+
+/* Optional: hide vertical scrollbar if you also want no vertical scroll */
+body {
+    overflow-y: auto; /* or hidden if you want no scroll at all */
+}

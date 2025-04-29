@@ -3,7 +3,9 @@ import LoginPage from "./auth/login/LoginPage";
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import RegisterPage from "./auth/register/RegisterPage";
 import MainPage from './pages/MainPage';
-import ManagerAddDocument from './management/ManagerAddDocument';
+import UploadDocument from './management/UploadDocument';
+import TrainingModulesPage from "./pages/TrainingModulesPage";
+import UploadsPage from "./management/UploadsPage";
 
 function App() {
   return (
@@ -15,8 +17,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/main" element={<MainPage />} />
-          <Route path="/add-document" element={<ManagerAddDocument />} />
-          {/* Add more routes as needed */}
+          <Route path="/add-document" element={<UploadDocument />} />
+          <Route path="/modules" element={<TrainingModulesPage />} />
+          <Route path="/uploads" element={<UploadsPage />} />
         </Routes>
       </Router>
   );
