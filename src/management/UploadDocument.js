@@ -6,6 +6,7 @@ import '../App.css';
 function UploadDocument() {
     const [userId, setUserId] = useState(null);
     const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
     const [file, setFile] = useState(null);
     const [tags, setTags] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
@@ -42,6 +43,7 @@ function UploadDocument() {
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('title', title);
+        formData.append('description', description);
         formData.append('file', file);
 
         tags.split(',').forEach(tag => {
@@ -55,6 +57,7 @@ function UploadDocument() {
             setStatusMessage('Upload successful!');
             setIsSuccess(true);
             setTitle('');
+            setDescription('');
             setFile(null);
             setTags('');
             if (fileInputRef.current) {
@@ -86,6 +89,17 @@ function UploadDocument() {
                         placeholder="Course Title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <input
+                        type="description"
+                        className="form-control"
+                        placeholder="Course Description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         required
                     />
                 </div>

@@ -9,6 +9,9 @@ function TrainingModulesPage() {
     const [selectedModule, setSelectedModule] = useState(null);
     const [isManager, setIsManager] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [userId, setUserId] = useState(null);
+    const [isCompleted, setIsCompleted] = useState(false);
+
     const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
 
@@ -43,10 +46,29 @@ function TrainingModulesPage() {
             axios.get(`http://localhost:8080/api/users/name/${user}`)
                 .then(res => {
                     if (res.data.userType === 'MANAGER') setIsManager(true);
+                    setUserId(res.data.id);
                 })
                 .catch(err => console.error('User type fetch error:', err));
         }
     }, []);
+
+    // Check if selected module is completed by this user
+    useEffect(() => {
+        if (selectedModule?.id && userId) {
+            axios.get(`http://localhost:8080/api/completed/isCompleted`, {
+                params: {
+                    userId: userId,
+                    documentId: selectedModule.id
+                }
+            })
+            .then(res => {
+                setIsCompleted(res.data);
+            })
+            .catch(err => {
+                console.error("Check completion error:", err);
+            });
+        }
+    }, [selectedModule, userId]);
 
     return (
         <div className="container-fluid py-4" style={{ backgroundColor: '#f2efff', minHeight: '100vh' }}>
@@ -95,7 +117,7 @@ function TrainingModulesPage() {
                                 <div className="col-8">
                                     <div className="card-body">
                                         <h6 className="card-title">{module.title}</h6>
-                                        <p className="card-text small text-muted">{module.content?.slice(0, 60) || 'No description'}</p>
+                                        <p className="card-text small text-muted">{module.description}</p>
                                     </div>
                                 </div>
                             </div>
@@ -117,12 +139,12 @@ function TrainingModulesPage() {
                             <p className="text-danger">In progress</p>
                             <div className="d-flex justify-content-center mb-3">
                                 <span className="me-4">🕑 15m</span>
-                                <span>⭐ 4.5</span>
                             </div>
                             <div style={{ maxWidth: '500px' }}>
                                 <h5>Course Overview</h5>
                                 <p>{selectedModule.content || 'No content available.'}</p>
                             </div>
+
                             <button
                                 className="btn btn-dark w-50 mt-3"
                                 style={{ borderRadius: '20px' }}
@@ -136,6 +158,28 @@ function TrainingModulesPage() {
                                 }}
                             >
                                 Download course
+                            </button>
+
+                            <button
+                                className="btn btn-dark w-50 mt-3"
+                                style={{ borderRadius: '20px' }}
+                                disabled={isCompleted}
+                                onClick={() => {
+                                    if (!userId || !selectedModule?.id) return;
+
+                                    axios.post(`http://localhost:8080/api/completed/mark`, null, {
+                                        params: {
+                                            userId: userId,
+                                            documentId: selectedModule.id
+                                        }
+                                    }).then(() => {
+                                        setIsCompleted(true);
+                                    }).catch(err => {
+                                        console.error("Mark completed error:", err);
+                                    });
+                                }}
+                            >
+                                {isCompleted ? "Completed" : "Mark as completed"}
                             </button>
                         </>
                     ) : (
