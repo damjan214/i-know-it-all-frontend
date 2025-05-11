@@ -42,19 +42,40 @@ function TrainingModulesPage() {
     };
 
     const handleSearch = async () => {
-        if (!searchQuery.trim()) {
-            fetchModules();
-            return;
-        }
+        const hasTags = selectedTags.length > 0;
+        const hasSearch = searchQuery.trim() !== "";
+
         try {
-            const response = await axios.get(`http://localhost:8080/api/documents/search?keyword=${encodeURIComponent(searchQuery)}`);
-            setModules(response.data);
-            if (response.data.length > 0) {
-                handleModuleClick(response.data[0].id);
+            if (!hasTags && !hasSearch) {
+                // No tags, no search: GET all modules
+                fetchModules();
+            } else if (hasTags && hasSearch) {
+                // Tags + Search: POST request to filter modules
+                const response = await axios.post(
+                    'http://localhost:8080/api/documents/filter',
+                    selectedTags,
+                    { params: { keyword: searchQuery.trim() } }
+                );
+                setModules(response.data);
+                if (response.data.length > 0) handleModuleClick(response.data[0].id);
+            } else if (hasTags) {
+                // Tags only: POST request to filter modules by tags
+                const response = await axios.post(
+                    'http://localhost:8080/api/documents/filter',
+                    selectedTags
+                );
+                setModules(response.data);
+                if (response.data.length > 0) handleModuleClick(response.data[0].id);
+            } else if (hasSearch) {
+                // Search only: GET request to search modules
+                const response = await axios.get(
+                    `http://localhost:8080/api/documents/search?keyword=${encodeURIComponent(searchQuery.trim())}`
+                );
+                setModules(response.data);
+                if (response.data.length > 0) handleModuleClick(response.data[0].id);
             }
         } catch (error) {
-            alert('Search failed.');
-            console.error("Search error:", error);
+            console.error("Search or filter error:", error);
         }
     };
 
@@ -69,9 +90,11 @@ function TrainingModulesPage() {
     };
 
     const handleTagClick = (tagName) => {
-        setSelectedTags(prev =>
-            prev.includes(tagName) ? prev.filter(t => t !== tagName) : [...prev, tagName]
-        );
+        const newSelectedTags = selectedTags.includes(tagName)
+            ? selectedTags.filter(t => t !== tagName)
+            : [...selectedTags, tagName];
+
+        setSelectedTags(newSelectedTags);
     };
 
     useEffect(() => {
@@ -104,6 +127,11 @@ function TrainingModulesPage() {
                 });
         }
     }, [selectedModule, userId]);
+
+    useEffect(() => {
+        // Call handleSearch whenever searchQuery or selectedTags changes
+        handleSearch();
+    }, [selectedTags, searchQuery]);
 
     return (
         <div className="modules-layout">
