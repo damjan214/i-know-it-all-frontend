@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/MyAccountPage.css';
-import defaultProfile from '../images/profile.png';
+import defaultProfile from '../images/user.png';
 
 function MyAccountPage() {
     const [userData, setUserData] = useState(null);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/MainPage.css';
-import profilePicture from "../images/profile.png";
+import profilePicture from "../images/user.png";
 import hamburgerIcon from '../images/menu.png';
 import userIcon from '../images/user.png';
 import axios from "axios";
@@ -13,6 +13,14 @@ function MainPage() {
     const [showDropdown, setShowDropdown] = useState(false);
     const user = JSON.parse(localStorage.getItem('user'));
     const [isManager, setIsManager] = useState(false);
+    
+    const [userData, setUserData] = useState(null);
+    const [colleagues, setColleagues] = useState([]);
+
+    const [documents, setDocuments] = useState([]);
+    const [completedDocIds, setCompletedDocIds] = useState(new Set());
+    const [tagStats, setTagStats] = useState({});
+    const [loadingTags, setLoadingTags] = useState(true);
 
     const handleLogout = () => {
         navigate('/login');
@@ -22,15 +30,69 @@ function MainPage() {
         if (user) {
         axios.get(`http://localhost:8080/api/users/name/${user}`)
             .then(response => {
-            if (response.data.userType === 'MANAGER') {
-                setIsManager(true);
-            }
+                const currentUser = response.data;
+                setUserData(currentUser);
+
+                if (response.data.userType === 'MANAGER') {
+                    setIsManager(true);
+                }
+
+                axios.get(`http://localhost:8080/api/users`)
+                .then(res => {
+                    const sameDepartmentUsers = res.data.filter(u =>
+                        u.departmentType === currentUser.departmentType &&
+                        u.id !== currentUser.id // exclude self
+                    );
+                    setColleagues(sameDepartmentUsers);
+                })
+                .catch(err => {
+                    console.error("Error fetching all users:", err);
+                });
+
+                // Fetch all documents
+                axios.get('http://localhost:8080/api/documents/')
+                .then(docRes => {
+                    const allDocs = docRes.data;
+                    setDocuments(allDocs);
+
+                    // Fetch completed documents for current user
+                    const completionChecks = allDocs.map(doc =>
+                        axios.get(`http://localhost:8080/api/completed/isCompleted?userId=${currentUser.id}&documentId=${doc.id}`)
+                            .then(res => ({ docId: doc.id, completed: res.data }))
+                    );
+
+                    Promise.all(completionChecks).then(results => {
+                        const completedSet = new Set(
+                            results.filter(r => r.completed).map(r => r.docId)
+                        );
+                        setCompletedDocIds(completedSet);
+
+                        // Build tag stats
+                        const stats = {};
+                        allDocs.forEach(doc => {
+                            doc.tags.forEach(tag => {
+                                if (!stats[tag.name]) {
+                                    stats[tag.name] = { total: 0, completed: 0 };
+                                }
+                                stats[tag.name].total += 1;
+                                if (completedSet.has(doc.id)) {
+                                    stats[tag.name].completed += 1;
+                                }
+                            });
+                        });
+                        setTagStats(stats);
+                        setLoadingTags(false);
+                    });
+                })
+                .catch(err => {
+                    console.error("Error fetching documents:", err);
+                });
             })
             .catch(error => {
             console.error('Error fetching user data:', error);
             });
         }
-    }, []);
+    }, [user]);
 
     return (
         <div className="main-layout">
@@ -89,30 +151,16 @@ function MainPage() {
                 <p>Access your onboarding courses here</p>
                 </div>
 
-                <div className="d-flex justify-content-around mb-4">
-                <div className="text-center">
-                    <h5>3</h5>
-                    <p>My Friends</p>
-                </div>
-                <div className="text-center">
-                    <h5>3</h5>
-                    <p>Courses in progress</p>
-                </div>
-                </div>
-
+                <br/>
                 <h5>My Progress Overview</h5>
                 <div className="d-flex justify-content-around mt-3 flex-wrap gap-3">
-                <div className="text-center p-3 rounded shadow-sm" style={{ backgroundColor: '#f5f5f5', width: '30%' }}>
+                <div className="text-center p-3 rounded shadow-sm" style={{ backgroundColor: '#f5f5f5', width: '45%' }}>
                     <p>✅ Successfully completed</p>
-                    <h5>5</h5>
+                    <h5>{completedDocIds.size}</h5>
                 </div>
-                <div className="text-center p-3 rounded shadow-sm" style={{ backgroundColor: '#f5f5f5', width: '30%' }}>
+                <div className="text-center p-3 rounded shadow-sm" style={{ backgroundColor: '#f5f5f5', width: '45%' }}>
                     <p>❌ Not completed</p>
-                    <h5>3</h5>
-                </div>
-                <div className="text-center p-3 rounded shadow-sm" style={{ backgroundColor: '#f5f5f5', width: '30%' }}>
-                    <p>🏆 Skills mastered</p>
-                    <h5>7</h5>
+                    <h5>{documents.length - completedDocIds.size}</h5>
                 </div>
                 </div>
             </div>
@@ -120,37 +168,42 @@ function MainPage() {
             {/* Right panel */}
             <div className="content-right">
                 <div className="mb-4">
-                <h6>Friends</h6>
-                <ul className="list-unstyled">
-                    <li className="mb-2 d-flex justify-content-between">
-                    Alin Pop <button className="btn btn-sm btn-outline-primary">Message</button>
-                    </li>
-                    <li className="mb-2 d-flex justify-content-between">
-                    David Pap <button className="btn btn-sm btn-outline-primary">Message</button>
-                    </li>
-                    <li className="mb-2 d-flex justify-content-between">
-                    Ion <button className="btn btn-sm btn-outline-primary">Message</button>
-                    </li>
-                </ul>
-                <button className="btn btn-primary w-100">Invite Colleagues</button>
+                <h5>
+                    Colleagues from {
+                        userData && userData.departmentType
+                            ? userData.departmentType
+                            : "your"
+                    } department
+                </h5>
+                {colleagues.length === 0 ? (
+                    <p>No colleagues in your department at the moment.</p>
+                ) : ( 
+                    <ul className="list-unstyled">
+                        {colleagues.map(colleague => (
+                            <li key={colleague.id} className="mb-2 d-flex justify-content-between">
+                                {colleague.name} {colleague.userType === 'MANAGER' && <span className="badge bg-info text-dark">Manager</span>}
+                            </li>
+                        ))}
+                    </ul>
+                )}
                 </div>
-
                 <div>
-                <h6>Courses in Progress</h6>
-                <ul className="list-unstyled">
-                    <li className="mb-3">
-                    <strong>Code of Conduct</strong> <br />
-                    <small>Progress: 45%</small>
-                    </li>
-                    <li className="mb-3">
-                    <strong>Workplace Safety</strong> <br />
-                    <small>Progress: 60%</small>
-                    </li>
-                    <li className="mb-3">
-                    <strong>Team Collaboration</strong> <br />
-                    <small>Progress: 35%</small>
-                    </li>
-                </ul>
+                <br/>    
+                <h5>Learning Topics Overview</h5>
+                {loadingTags ? (
+                    <p>Loading tag stats...</p>
+                ) : (
+                    <ul className="list-unstyled">
+                        {Object.entries(tagStats).map(([tag, { total, completed }]) => {
+                            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+                            return (
+                                <li key={tag} className="mb-2">
+                                    <strong>{tag}</strong>: {completed}/{total} completed ({percentage}%)
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
                 </div>
             </div>
             </div>
