@@ -146,10 +146,10 @@ function TrainingModulesPage() {
                     style={{ maxHeight: '300px', objectFit: 'cover' }}
                     />
                     <h4>{selectedModule.title}</h4>
-                    <p className="text-danger">In progress</p>
                     <div className="d-flex justify-content-center mb-3">
                     <span className="me-4">🕑 15m</span>
                     </div>
+                    <br/>
                     <div style={{ maxWidth: '500px' }}>
                     <h5>Course Overview</h5>
                     <p>{selectedModule.content || 'No content available.'}</p>
