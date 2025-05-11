@@ -6,13 +6,14 @@ import MainPage from './pages/MainPage';
 import UploadDocument from './management/UploadDocument';
 import TrainingModulesPage from "./pages/TrainingModulesPage";
 import UploadsPage from "./management/UploadsPage";
+import MyAccountPage from './pages/MyAccountPage';
 
 function App() {
   return (
       <Router>
         <Routes>
             <Route path="/" element={
-                 <Navigate replace to="/login" />
+                <Navigate replace to="/login" />
             } />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -20,6 +21,7 @@ function App() {
           <Route path="/add-document" element={<UploadDocument />} />
           <Route path="/modules" element={<TrainingModulesPage />} />
           <Route path="/uploads" element={<UploadsPage />} />
+          <Route path="/account" element={<MyAccountPage />} />
         </Routes>
       </Router>
   );

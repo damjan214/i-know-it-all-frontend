@@ -75,3 +75,30 @@ body {
     border-radius: 12px;
     color: #6b4eff;
 }
+
+.uploads-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f2efff;
+}
+
+.sidebar-inner {
+    width: 220px;
+    background-color: #ffffff;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.uploads-main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.hamburger-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    cursor: pointer;
+}
