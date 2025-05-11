@@ -203,7 +203,12 @@ function TrainingModulesPage() {
                                     style={{ maxHeight: '300px', objectFit: 'cover' }}
                                 />
                                 <h4>{selectedModule.title}</h4>
-                                <p className="text-danger">In progress</p>
+                                <p
+                                    className={`fw-bold ${isCompleted ? 'text-success' : 'text-danger'}`}
+                                    style={{ fontSize: '0.9rem' }}
+                                    >
+                                    {isCompleted ? 'Completed' : 'In progress'}
+                                </p>
                                 <div className="d-flex justify-content-center mb-3">
                                     <span className="me-4">🕑 15m</span>
                                 </div>
