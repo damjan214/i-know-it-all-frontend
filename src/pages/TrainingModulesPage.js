@@ -24,7 +24,9 @@ function TrainingModulesPage() {
         try {
             const response = await axios.get('http://localhost:8080/api/documents/');
             setModules(response.data);
-            setSelectedModule(response.data[0] || null);
+            if (response.data.length > 0) {
+                handleModuleClick(response.data[0].id);
+            }
         } catch (error) {
             console.error("Failed to fetch documents:", error);
         }
@@ -47,10 +49,22 @@ function TrainingModulesPage() {
         try {
             const response = await axios.get(`http://localhost:8080/api/documents/search?keyword=${encodeURIComponent(searchQuery)}`);
             setModules(response.data);
-            setSelectedModule(response.data[0] || null);
+            if (response.data.length > 0) {
+                handleModuleClick(response.data[0].id);
+            }
         } catch (error) {
             alert('Search failed.');
             console.error("Search error:", error);
+        }
+    };
+
+    const handleModuleClick = async (moduleId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/documents/${moduleId}`);
+            console.log("Fetched module with tags:", response.data);
+            setSelectedModule(response.data);
+        } catch (error) {
+            console.error("Failed to fetch module details:", error);
         }
     };
 
@@ -161,7 +175,7 @@ function TrainingModulesPage() {
                                 key={module.id}
                                 className={`card mb-3 ${selectedModule?.id === module.id ? 'border-primary' : ''}`}
                                 style={{ cursor: 'pointer', borderRadius: '12px' }}
-                                onClick={() => setSelectedModule(module)}
+                               onClick={() => handleModuleClick(module.id)}
                             >
                                 <div className="row g-0">
                                     <div className="col-4">
@@ -194,9 +208,30 @@ function TrainingModulesPage() {
                                     <span className="me-4">🕑 15m</span>
                                 </div>
                                 <div style={{ maxWidth: '500px' }}>
-                                    <h5>Course Overview</h5>
-                                    <p>{selectedModule.content || 'No content available.'}</p>
+
+                                <h5>Description</h5>
+                                <p>{selectedModule.description || 'No description available.'}</p>
+
+                                <h5>Course Overview</h5>
+                                <p>{selectedModule.content || 'No content available.'}</p>
+
+                                <h5>Tags</h5>
+                                <div className="d-flex flex-wrap mb-3">
+                                    {selectedModule.tags && selectedModule.tags.length > 0 ? (
+                                        selectedModule.tags.map((tag, index) => (
+                                            <button
+                                                key={index}
+                                                className="btn btn-sm me-2 mb-2 btn-light"
+                                                style={{ borderRadius: '20px', pointerEvents: 'none', opacity: 1 }}
+                                            >
+                                                {tag.name}
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <p className="text-muted">No tags available.</p>
+                                    )}
                                 </div>
+                            </div>
 
                                 <button
                                     className="btn btn-dark w-50 mt-3"
