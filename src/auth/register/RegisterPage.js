@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import registerBackground from "../../images/login.png";
+import {useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ function RegisterPage() {
 
     const [statusMessage, setStatusMessage] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
+    const navigate = useNavigate();
 
     const userTypeOptions = ['EMPLOYEE', 'MANAGER'];
     const departmentTypeOptions = [
@@ -38,6 +40,7 @@ function RegisterPage() {
                 setIsSuccess(true);
                 setStatusMessage('Registration successful!');
                 setFormData({ name: '', email: '', password: '', userType: '', departmentType: '' });
+                setTimeout(() => navigate('/login'), 1000);
             }
         } catch (error) {
             setIsSuccess(false);
