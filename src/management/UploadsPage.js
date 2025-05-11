@@ -49,7 +49,7 @@ function UploadsPage() {
     }, []);
 
     const handleEdit = (id) => {
-        alert(`Edit course with ID: ${id}`);
+        navigate(`/edit-document/${id}`);
     };
 
     const handleDelete = async (id) => {

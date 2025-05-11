@@ -1,71 +1,62 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 
-function UploadDocument() {
-    const [userId, setUserId] = useState(null);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [file, setFile] = useState(null);
-    const [tags, setTags] = useState('');
-    const [statusMessage, setStatusMessage] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
+function EditDocument() {
+    const { id } = useParams();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            const username = JSON.parse(localStorage.getItem('user'));
-            if (!username) return;
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [tags, setTags] = useState('');
+    const [file, setFile] = useState(null);
+    const [statusMessage, setStatusMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
+   useEffect(() => {
+        const fetchDocument = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/users/name/${username}`);
-                setUserId(response.data.id);
+                const response = await axios.get(`http://localhost:8080/api/documents/${id}`);
+                const { title, description, tags } = response.data;
+
+                // Extract tag names from objects
+                const tagNames = tags?.map(tag => tag.name).join(', ') || '';
+
+                setTitle(title);
+                setDescription(description);
+                setTags(tagNames);
             } catch (error) {
-                console.error("Failed to fetch user ID", error);
+                console.error('Error fetching document', error);
             }
         };
+        fetchDocument();
+    }, [id]);
 
-        fetchUserId();
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatusMessage('');
         setIsSuccess(false);
 
-        if (!userId) {
-            setStatusMessage("User ID not loaded. Try again later.");
-            return;
-        }
-
         const formData = new FormData();
-        formData.append('userId', userId);
         formData.append('title', title);
         formData.append('description', description);
-        formData.append('file', file);
-
-        tags.split(',').forEach(tag => {
-            formData.append('tags', tag.trim());
-        });
+        tags.split(',').forEach(tag => formData.append('tags', tag.trim()));
+        if (file) {
+            formData.append('file', file);
+        }
 
         try {
-            await axios.post('http://localhost:8080/api/documents/upload', formData, {
+            await axios.put(`http://localhost:8080/api/documents/${id}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            setStatusMessage('Upload successful!');
+            setStatusMessage('Update successful!');
             setIsSuccess(true);
-            setTitle('');
-            setDescription('');
-            setFile(null);
-            setTags('');
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
             setTimeout(() => navigate('/uploads'), 1000);
         } catch (error) {
-            setStatusMessage('Upload failed. Please try again.');
+            setStatusMessage('Update failed. Please try again.');
             setIsSuccess(false);
             console.error(error);
         }
@@ -74,7 +65,7 @@ function UploadDocument() {
     return (
         <div className="container my-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="mb-0">Upload Course</h1>
+                <h1 className="mb-0">Edit Course</h1>
                 <button className="btn btn-secondary" onClick={() => navigate('/uploads')}>Back</button>
             </div>
 
@@ -96,7 +87,7 @@ function UploadDocument() {
 
                 <div className="mb-3">
                     <input
-                        type="description"
+                        type="text"
                         className="form-control"
                         placeholder="Course Description"
                         value={description}
@@ -111,8 +102,8 @@ function UploadDocument() {
                         className="form-control"
                         onChange={(e) => setFile(e.target.files[0])}
                         ref={fileInputRef}
-                        required
                     />
+                    <small className="text-muted">Leave blank to keep existing file.</small>
                 </div>
 
                 <div className="mb-4">
@@ -122,14 +113,13 @@ function UploadDocument() {
                         placeholder="Enter tags (comma-separated)"
                         value={tags}
                         onChange={(e) => setTags(e.target.value)}
-                        required
                     />
                 </div>
 
-                <button type="submit" className="btn btn-success w-100">Upload Course</button>
+                <button type="submit" className="btn btn-primary w-100">Update Course</button>
             </form>
         </div>
     );
 }
 
-export default UploadDocument;
+export default EditDocument;
