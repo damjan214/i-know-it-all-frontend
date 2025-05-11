@@ -34,7 +34,6 @@ function EditDocument() {
         fetchDocument();
     }, [id]);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatusMessage('');
@@ -97,11 +96,15 @@ function EditDocument() {
                 </div>
 
                 <div className="mb-3">
+                    <p className="text-muted">
+                        Accepted file types: .pdf, .png, .jpeg, .jpg, .mp4, .mov, .avi, .txt, .doc, .docx (max 100 MB).
+                    </p>
                     <input
                         type="file"
                         className="form-control"
                         onChange={(e) => setFile(e.target.files[0])}
                         ref={fileInputRef}
+                        accept=".pdf,.png,.jpeg,.jpg,.mp4,.mov,.avi,.txt,.doc,.docx"
                     />
                     <small className="text-muted">Leave blank to keep existing file.</small>
                 </div>

@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UploadsPage.css';
 import axios from 'axios';
 import hamburgerIcon from '../images/menu.png';
+import { FaFilePdf, FaFileImage, FaVideo, FaFileAlt } from 'react-icons/fa';
 
 function UploadsPage() {
     const [courses, setCourses] = useState([]);
@@ -47,6 +48,26 @@ function UploadsPage() {
     useEffect(() => {
         fetchCourses();
     }, []);
+
+    function getFileTypeIcon(fileType) {
+        if (!fileType) return <FaFileAlt className="file-icon text-secondary" />;
+
+        if (fileType.includes('pdf')) {
+            return <FaFilePdf className="file-icon text-danger" />;
+        } else if (fileType.includes('image')) {
+            return <FaFileImage className="file-icon text-primary" />;
+        } else if (fileType.includes('video/mp4')) {
+            return <FaVideo className="file-icon text-info" />;
+        } else if (fileType.includes('quicktime') || fileType.includes('avi')) {
+            return <FaVideo className="file-icon text-warning" />;
+        } else if (fileType.includes('plain')) {
+            return <FaFileAlt className="file-icon text-muted" />; // .txt
+        } else if (fileType.includes('msword') || fileType.includes('officedocument')) {
+            return <FaFileAlt className="file-icon text-primary" />; // .doc, .docx
+        } else {
+            return <FaFileAlt className="file-icon text-secondary" />;
+        }
+    }
 
     const handleEdit = (id) => {
         navigate(`/edit-document/${id}`);
@@ -112,21 +133,24 @@ function UploadsPage() {
             {courses.map(course => (
             <div key={course.id} className="card mb-3 shadow-sm">
                 <div className="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 className="card-title mb-1">{course.title}</h5>
-                    <p className="card-text text-muted mb-1">{course.description}</p>
-                </div>
-                <div>
-                    <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(course.id)}>
-                    Edit
-                    </button>
-                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(course.id)}>
-                    Delete
-                    </button>
-                </div>
+                    <div className="d-flex align-items-center">
+                        {getFileTypeIcon(course.fileType)}
+                        <div className="ms-3">
+                            <h5 className="card-title mb-1">{course.title}</h5>
+                            <p className="card-text text-muted mb-1">{course.description}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(course.id)}>
+                            Edit
+                        </button>
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(course.id)}>
+                            Delete
+                        </button>
+                    </div>
                 </div>
             </div>
-            ))}
+        ))}
         </div>
         </div>
     );
