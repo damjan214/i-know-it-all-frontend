@@ -40,6 +40,11 @@ function UploadDocument() {
             return;
         }
 
+        if (!file) {
+            setStatusMessage("Please select a file to upload.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('title', title);
@@ -65,7 +70,12 @@ function UploadDocument() {
             }
             setTimeout(() => navigate('/uploads'), 1000);
         } catch (error) {
-            setStatusMessage('Upload failed. Please try again.');
+            // Check if the error is related to file size
+            if (error.response && error.response.status === 400) {
+                setStatusMessage('File size exceeds the allowed limit. Please upload a smaller file.');
+            } else {
+                setStatusMessage('Upload failed. Please try again.');
+            }
             setIsSuccess(false);
             console.error(error);
         }
@@ -96,7 +106,7 @@ function UploadDocument() {
 
                 <div className="mb-3">
                     <input
-                        type="description"
+                        type="text"
                         className="form-control"
                         placeholder="Course Description"
                         value={description}
@@ -106,11 +116,15 @@ function UploadDocument() {
                 </div>
 
                 <div className="mb-3">
+                    <p className="text-muted">
+                        Accepted file types: .pdf, .png, .jpeg, .jpg, .mp4, .mov, .avi (max 100 MB).
+                    </p>
                     <input
                         type="file"
                         className="form-control"
                         onChange={(e) => setFile(e.target.files[0])}
                         ref={fileInputRef}
+                        accept=".pdf,.png,.jpeg,.jpg,.mp4,.mov,.avi"
                         required
                     />
                 </div>
