@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/TrainingModulesPage.css';
 import axios from 'axios';
 import hamburgerIcon from '../images/menu.png';
+import { FaFilePdf, FaFileImage, FaVideo, FaFileAlt } from 'react-icons/fa';
 
 function TrainingModulesPage() {
     const [modules, setModules] = useState([]);
@@ -106,6 +107,26 @@ function TrainingModulesPage() {
 
         setSelectedTags(newSelectedTags);
     };
+
+    function getFileTypeIcon(fileType) {
+        if (!fileType) return <FaFileAlt className="file-icon text-secondary" />;
+
+        if (fileType.includes('pdf')) {
+            return <FaFilePdf className="file-icon text-danger" />;
+        } else if (fileType.includes('image')) {
+            return <FaFileImage className="file-icon text-primary" />;
+        } else if (fileType.includes('video/mp4')) {
+            return <FaVideo className="file-icon text-info" />;
+        } else if (fileType.includes('quicktime') || fileType.includes('avi')) {
+            return <FaVideo className="file-icon text-warning" />;
+        } else if (fileType.includes('plain')) {
+            return <FaFileAlt className="file-icon text-muted" />; // .txt
+        } else if (fileType.includes('msword') || fileType.includes('officedocument')) {
+            return <FaFileAlt className="file-icon text-primary" />; // .doc, .docx
+        } else {
+            return <FaFileAlt className="file-icon text-secondary" />;
+        }
+    }
 
     useEffect(() => {
         fetchModules();
@@ -216,11 +237,11 @@ function TrainingModulesPage() {
                                     key={module.id}
                                     className={`card mb-3 ${selectedModule?.id === module.id ? 'border-primary' : ''}`}
                                     style={{ cursor: 'pointer', borderRadius: '12px' }}
-                                   onClick={() => handleModuleClick(module.id)}
+                                    onClick={() => handleModuleClick(module.id)}
                                 >
                                     <div className="row g-0">
                                         <div className="col-4">
-                                            <img src="/images/placeholder.png" alt="Preview" className="img-fluid rounded-start" />
+                                            {getFileTypeIcon(module.fileType)}
                                         </div>
                                         <div className="col-8">
                                             <div className="card-body">
@@ -239,13 +260,10 @@ function TrainingModulesPage() {
                         <div className="modules-details d-flex flex-column align-items-center p-4">
                             {selectedModule ? (
                                 <>
-                                    <img
-                                        src="/images/placeholder.png"
-                                        alt={selectedModule.title}
-                                        className="img-fluid rounded mb-4"
-                                        style={{ maxHeight: '300px', objectFit: 'cover' }}
-                                    />
-                                    <h4>{selectedModule.title}</h4>
+                                     <div className="d-flex align-items-center mb-3">
+                                        {getFileTypeIcon(selectedModule.fileType)}
+                                        <h4 className="ms-3">{selectedModule.title}</h4>
+                                    </div>
                                     <p
                                         className={`fw-bold ${isCompleted ? 'text-success' : 'text-danger'}`}
                                         style={{ fontSize: '0.9rem' }}

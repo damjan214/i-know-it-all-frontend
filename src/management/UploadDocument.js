@@ -117,14 +117,14 @@ function UploadDocument() {
 
                 <div className="mb-3">
                     <p className="text-muted">
-                        Accepted file types: .pdf, .png, .jpeg, .jpg, .mp4, .mov, .avi (max 100 MB).
+                       Accepted file types: .pdf, .png, .jpeg, .jpg, .mp4, .mov, .avi, .txt, .doc, .docx (max 100 MB).
                     </p>
                     <input
                         type="file"
                         className="form-control"
                         onChange={(e) => setFile(e.target.files[0])}
                         ref={fileInputRef}
-                        accept=".pdf,.png,.jpeg,.jpg,.mp4,.mov,.avi"
+                        accept=".pdf,.png,.jpeg,.jpg,.mp4,.mov,.avi,.txt,.doc,.docx"
                         required
                     />
                 </div>
