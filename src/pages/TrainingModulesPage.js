@@ -14,7 +14,7 @@ function TrainingModulesPage() {
     const [isCompleted, setIsCompleted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    const [tags, setTags] = useState([]); // Initialize tags as an empty array
+    const [tags, setTags] = useState([]);
     const [showAllTags, setShowAllTags] = useState(false);
     const [selectedTags, setSelectedTags] = useState([]);
 
@@ -35,7 +35,7 @@ function TrainingModulesPage() {
     const fetchTags = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/tags');
-            setTags(response.data); // Assuming response.data is an array of {id, name} objects
+            setTags(response.data);
         } catch (error) {
             console.error("Failed to fetch tags:", error);
         }
@@ -49,33 +49,43 @@ function TrainingModulesPage() {
             if (!hasTags && !hasSearch) {
                 // No tags, no search: GET all modules
                 fetchModules();
-            } else if (hasTags && hasSearch) {
-                // Tags + Search: POST request to filter modules
-                const response = await axios.post(
-                    'http://localhost:8080/api/documents/filter',
-                    selectedTags,
-                    { params: { keyword: searchQuery.trim() } }
-                );
-                setModules(response.data);
-                if (response.data.length > 0) handleModuleClick(response.data[0].id);
+            } else if (hasSearch) {
+                // Search: GET request to search modules - this includes both tags and content
+                try {
+                    const response = await axios.get(
+                        `http://localhost:8080/api/documents/search?keyword=${encodeURIComponent(searchQuery.trim())}`
+                    );
+                    setModules(response.data);
+                    if (response.data.length > 0) {
+                        handleModuleClick(response.data[0].id);
+                    } else {
+                        setSelectedModule(null); // Clear module details if no modules found
+                    }
+                } catch (error) {
+                    alert('Search failed.');
+                    console.error("Search error:", error);
+                }
             } else if (hasTags) {
                 // Tags only: POST request to filter modules by tags
-                const response = await axios.post(
-                    'http://localhost:8080/api/documents/filter',
-                    selectedTags
-                );
-                setModules(response.data);
-                if (response.data.length > 0) handleModuleClick(response.data[0].id);
-            } else if (hasSearch) {
-                // Search only: GET request to search modules
-                const response = await axios.get(
-                    `http://localhost:8080/api/documents/search?keyword=${encodeURIComponent(searchQuery.trim())}`
-                );
-                setModules(response.data);
-                if (response.data.length > 0) handleModuleClick(response.data[0].id);
-            }
+                try {
+                    const response = await axios.post(
+                        'http://localhost:8080/api/documents/filter',
+                        selectedTags
+                    );
+                    setModules(response.data);
+                    if (response.data.length > 0) {
+                        handleModuleClick(response.data[0].id);
+                    } else {
+                        setSelectedModule(null); // Clear module details if no modules found
+                    }
+                } catch (error) {
+                    alert('Failed to filter by tags.');
+                    console.error("Error filtering by tags:", error);
+                }
+            } 
         } catch (error) {
-            console.error("Search or filter error:", error);
+            alert('An unexpected error occurred.');
+            console.error("Unexpected error in handleSearch:", error);
         }
     };
 
@@ -99,7 +109,7 @@ function TrainingModulesPage() {
 
     useEffect(() => {
         fetchModules();
-        fetchTags(); // Fetch tags when the component is mounted
+        fetchTags();
 
         if (user) {
             axios.get(`http://localhost:8080/api/users/name/${user}`)
@@ -179,9 +189,9 @@ function TrainingModulesPage() {
                             key={index}
                             className={`btn btn-sm me-2 mb-2 ${selectedTags.includes(tag.name) ? 'btn-primary' : 'btn-light'}`}
                             style={{ borderRadius: '20px' }}
-                            onClick={() => handleTagClick(tag.name)} // Use the name of the tag
+                            onClick={() => handleTagClick(tag.name)}
                         >
-                            {tag.name} {/* Render tag name */}
+                            {tag.name}
                         </button>
                     ))}
                     {tags.length > 8 && (
@@ -198,115 +208,120 @@ function TrainingModulesPage() {
                 <div className="modules-content-sections">
                     {/* Modules list */}
                     <div className="modules-list bg-white rounded p-4">
-                        {modules.map(module => (
-                            <div
-                                key={module.id}
-                                className={`card mb-3 ${selectedModule?.id === module.id ? 'border-primary' : ''}`}
-                                style={{ cursor: 'pointer', borderRadius: '12px' }}
-                               onClick={() => handleModuleClick(module.id)}
-                            >
-                                <div className="row g-0">
-                                    <div className="col-4">
-                                        <img src="/images/placeholder.png" alt="Preview" className="img-fluid rounded-start" />
-                                    </div>
-                                    <div className="col-8">
-                                        <div className="card-body">
-                                            <h6 className="card-title">{module.title}</h6>
-                                            <p className="card-text small text-muted">{module.description}</p>
+                        {modules.length === 0 ? (
+                            <p>Sorry, no materials found!</p>
+                        ) : (
+                            modules.map(module => (
+                                <div
+                                    key={module.id}
+                                    className={`card mb-3 ${selectedModule?.id === module.id ? 'border-primary' : ''}`}
+                                    style={{ cursor: 'pointer', borderRadius: '12px' }}
+                                   onClick={() => handleModuleClick(module.id)}
+                                >
+                                    <div className="row g-0">
+                                        <div className="col-4">
+                                            <img src="/images/placeholder.png" alt="Preview" className="img-fluid rounded-start" />
+                                        </div>
+                                        <div className="col-8">
+                                            <div className="card-body">
+                                                <h6 className="card-title">{module.title}</h6>
+                                                <p className="card-text small text-muted">{module.description}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
 
                     {/* Module Details */}
-                    <div className="modules-details d-flex flex-column align-items-center p-4">
-                        {selectedModule ? (
-                            <>
-                                <img
-                                    src="/images/placeholder.png"
-                                    alt={selectedModule.title}
-                                    className="img-fluid rounded mb-4"
-                                    style={{ maxHeight: '300px', objectFit: 'cover' }}
-                                />
-                                <h4>{selectedModule.title}</h4>
-                                <p
-                                    className={`fw-bold ${isCompleted ? 'text-success' : 'text-danger'}`}
-                                    style={{ fontSize: '0.9rem' }}
+                    {modules.length > 0 && (
+                        <div className="modules-details d-flex flex-column align-items-center p-4">
+                            {selectedModule ? (
+                                <>
+                                    <img
+                                        src="/images/placeholder.png"
+                                        alt={selectedModule.title}
+                                        className="img-fluid rounded mb-4"
+                                        style={{ maxHeight: '300px', objectFit: 'cover' }}
+                                    />
+                                    <h4>{selectedModule.title}</h4>
+                                    <p
+                                        className={`fw-bold ${isCompleted ? 'text-success' : 'text-danger'}`}
+                                        style={{ fontSize: '0.9rem' }}
                                     >
-                                    {isCompleted ? 'Completed' : 'In progress'}
-                                </p>
-                                <div className="d-flex justify-content-center mb-3">
-                                    <span className="me-4">🕑 15m</span>
-                                </div>
-                                <div style={{ maxWidth: '500px' }}>
+                                        {isCompleted ? 'Completed' : 'In progress'}
+                                    </p>
+                                    <div className="d-flex justify-content-center mb-3">
+                                        <span className="me-4">🕑 15m</span>
+                                    </div>
+                                    <div style={{ maxWidth: '500px' }}>
+                                        <h5>Description</h5>
+                                        <p>{selectedModule.description || 'No description available.'}</p>
 
-                                <h5>Description</h5>
-                                <p>{selectedModule.description || 'No description available.'}</p>
+                                        <h5>Course Overview</h5>
+                                        <p>{selectedModule.content || 'No content available.'}</p>
 
-                                <h5>Course Overview</h5>
-                                <p>{selectedModule.content || 'No content available.'}</p>
+                                        <h5>Tags</h5>
+                                        <div className="d-flex flex-wrap mb-3">
+                                            {selectedModule.tags && selectedModule.tags.length > 0 ? (
+                                                selectedModule.tags.map((tag, index) => (
+                                                    <button
+                                                        key={index}
+                                                        className="btn btn-sm me-2 mb-2 btn-light"
+                                                        style={{ borderRadius: '20px', pointerEvents: 'none', opacity: 1 }}
+                                                    >
+                                                        {tag.name}
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                <p className="text-muted">No tags available.</p>
+                                            )}
+                                        </div>
+                                    </div>
 
-                                <h5>Tags</h5>
-                                <div className="d-flex flex-wrap mb-3">
-                                    {selectedModule.tags && selectedModule.tags.length > 0 ? (
-                                        selectedModule.tags.map((tag, index) => (
-                                            <button
-                                                key={index}
-                                                className="btn btn-sm me-2 mb-2 btn-light"
-                                                style={{ borderRadius: '20px', pointerEvents: 'none', opacity: 1 }}
-                                            >
-                                                {tag.name}
-                                            </button>
-                                        ))
-                                    ) : (
-                                        <p className="text-muted">No tags available.</p>
-                                    )}
-                                </div>
-                            </div>
-
-                                <button
-                                    className="btn btn-dark w-50 mt-3"
-                                    style={{ borderRadius: '20px' }}
-                                    onClick={() => {
-                                        if (selectedModule?.id) {
-                                            const downloadUrl = `http://localhost:8080/api/documents/download/${selectedModule.id}`;
-                                            window.open(downloadUrl, '_blank');
-                                        } else {
-                                            alert("No module selected.");
-                                        }
-                                    }}
-                                >
-                                    Download course
-                                </button>
-
-                                <button
-                                    className="btn btn-dark w-50 mt-3"
-                                    style={{ borderRadius: '20px' }}
-                                    disabled={isCompleted}
-                                    onClick={() => {
-                                        if (!userId || !selectedModule?.id) return;
-
-                                        axios.post(`http://localhost:8080/api/completed/mark`, null, {
-                                            params: {
-                                                userId: userId,
-                                                documentId: selectedModule.id
+                                    <button
+                                        className="btn btn-dark w-50 mt-3"
+                                        style={{ borderRadius: '20px' }}
+                                        onClick={() => {
+                                            if (selectedModule?.id) {
+                                                const downloadUrl = `http://localhost:8080/api/documents/download/${selectedModule.id}`;
+                                                window.open(downloadUrl, '_blank');
+                                            } else {
+                                                alert("No module selected.");
                                             }
-                                        }).then(() => {
-                                            setIsCompleted(true);
-                                        }).catch(err => {
-                                            console.error("Mark completed error:", err);
-                                        });
-                                    }}
-                                >
-                                    {isCompleted ? "Completed" : "Mark as completed"}
-                                </button>
-                            </>
-                        ) : (
-                            <p>No module selected</p>
-                        )}
-                    </div>
+                                        }}
+                                    >
+                                        Download course
+                                    </button>
+
+                                    <button
+                                        className="btn btn-dark w-50 mt-3"
+                                        style={{ borderRadius: '20px' }}
+                                        disabled={isCompleted}
+                                        onClick={() => {
+                                            if (!userId || !selectedModule?.id) return;
+
+                                            axios.post(`http://localhost:8080/api/completed/mark`, null, {
+                                                params: {
+                                                    userId: userId,
+                                                    documentId: selectedModule.id
+                                                }
+                                            }).then(() => {
+                                                setIsCompleted(true);
+                                            }).catch(err => {
+                                                console.error("Mark completed error:", err);
+                                            });
+                                        }}
+                                    >
+                                        {isCompleted ? "Completed" : "Mark as completed"}
+                                    </button>
+                                </>
+                            ) : (
+                                <p>No module selected</p>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
