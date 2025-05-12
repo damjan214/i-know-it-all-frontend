@@ -13,11 +13,47 @@ function OrganizationPage() {
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [showDropdown, setShowDropdown] = useState(false);
+
     const user = JSON.parse(localStorage.getItem('user'));
     const [isManager, setIsManager] = useState(false);
+    const [tags, setTags] = useState([]);
+    const [modules, setModules] = useState([]);
+    const [userId, setUserId] = useState(null);
+    const [selectedModule, setSelectedModule] = useState(null);
 
     const handleLogout = () => {
         navigate('/login');
+    };
+
+    const fetchModules = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/documents/');
+            setModules(response.data);
+            if (response.data.length > 0) {
+                handleModuleClick(response.data[0].id);
+            }
+        } catch (error) {
+            console.error("Failed to fetch documents:", error);
+        }
+    };
+
+    const fetchTags = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/tags');
+            setTags(response.data);
+        } catch (error) {
+            console.error("Failed to fetch tags:", error);
+        }
+    };
+
+    const handleModuleClick = async (moduleId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/documents/${moduleId}`);
+            console.log("Fetched module with tags:", response.data);
+            setSelectedModule(response.data);
+        } catch (error) {
+            console.error("Failed to fetch module details:", error);
+        }
     };
 
     const toggleManager = (id) => {
@@ -26,6 +62,20 @@ function OrganizationPage() {
             [id]: !prev[id]
         }));
     };
+
+    useEffect(() => {
+        fetchModules();
+        fetchTags();
+
+        if (user) {
+            axios.get(`http://localhost:8080/api/users/name/${user}`)
+                .then(res => {
+                    if (res.data.userType === 'MANAGER') setIsManager(true);
+                    setUserId(res.data.id);
+                })
+                .catch(err => console.error('User type fetch error:', err));
+        }
+    }, []);
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/users')
@@ -54,15 +104,13 @@ function OrganizationPage() {
         <div className="main-layout">
             {/* Sidebar */}
             {sidebarOpen && (
-                <div className="sidebar-inner">
-                    <nav className="nav flex-column w-100 p-4">
-                        <Link className="nav-link active sidebar-link" to="/main">Home</Link>
-                        <Link className="nav-link sidebar-link active-link" to="/organization">People & groups</Link>
-                        <Link className="nav-link sidebar-link" to="/modules">My courses</Link>
-                        <Link className="nav-link sidebar-link" to="#">FAQs</Link>
-                        {isManager && (
-                            <Link className="nav-link sidebar-link" to="/uploads">My uploads</Link>
-                        )}
+                <div className="sidebar-inner p-4">
+                    <nav className="nav flex-column">
+                        <Link className="nav-link" to="/main">Home</Link>
+                        <Link className="nav-link active" to="/organization">People & groups</Link>
+                        <Link className="nav-link" to="/modules">My courses</Link>
+                        <Link className="nav-link" to="#">FAQs</Link>
+                        {isManager && <Link className="nav-link" to="/uploads">My uploads</Link>}
                     </nav>
                 </div>
             )}
