@@ -8,6 +8,9 @@ import EditDocument from './management/EditDocument';
 import TrainingModulesPage from "./pages/TrainingModulesPage";
 import UploadsPage from "./management/UploadsPage";
 import MyAccountPage from './pages/MyAccountPage';
+import OrganizationPage from './pages/OrganizationPage';
+
+
 
 function App() {
   return (
@@ -24,6 +27,7 @@ function App() {
           <Route path="/modules" element={<TrainingModulesPage />} />
           <Route path="/uploads" element={<UploadsPage />} />
           <Route path="/account" element={<MyAccountPage />} />
+          <Route path="/organization" element={<OrganizationPage />} />
         </Routes>
       </Router>
   );

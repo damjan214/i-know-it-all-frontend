@@ -170,7 +170,7 @@ function TrainingModulesPage() {
                 <div className="sidebar-inner p-4">
                     <nav className="nav flex-column">
                         <Link className="nav-link" to="/main">Home</Link>
-                        <Link className="nav-link" to="#">People & groups</Link>
+                        <Link className="nav-link" to="/organization">People & groups</Link>
                         <Link className="nav-link active" to="/modules">My courses</Link>
                         <Link className="nav-link" to="#">FAQs</Link>
                         {isManager && <Link className="nav-link" to="/uploads">My uploads</Link>}

@@ -101,7 +101,7 @@ function MainPage() {
             <div className="sidebar-inner">
             <nav className="nav flex-column w-100 p-4">
                 <Link className="nav-link active sidebar-link" to="#">Home</Link>
-                <Link className="nav-link sidebar-link" to="#">People & groups</Link>
+                <Link className="nav-link sidebar-link" to="/organization">People & groups</Link>
                 <Link className="nav-link sidebar-link active-link" to="/modules">My courses</Link>
                 <Link className="nav-link sidebar-link" to="#">FAQs</Link>
                 {isManager && (
