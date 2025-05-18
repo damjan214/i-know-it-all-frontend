@@ -6,6 +6,7 @@ import profilePicture from "../images/user.png";
 import hamburgerIcon from '../images/menu.png';
 import userIcon from '../images/user.png';
 import axios from "axios";
+import Chatbot from '../components/Chatbox';
 
 function MainPage() {
     const navigate = useNavigate();
@@ -96,6 +97,7 @@ function MainPage() {
 
     return (
         <div className="main-layout">
+        <Chatbot />
         {/* Sidebar */}
         {sidebarOpen && (
             <div className="sidebar-inner">
