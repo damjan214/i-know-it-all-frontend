@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../styles/OrganizationPage.css';
 import hamburgerIcon from '../images/menu.png';
 import userIcon from '../images/user.png';
+import Chatbot from '../components/Chatbox';
 
 function OrganizationPage() {
     const [usersByDepartment, setUsersByDepartment] = useState({});
@@ -102,6 +103,7 @@ function OrganizationPage() {
 
     return (
         <div className="main-layout">
+            <Chatbot />
             {/* Sidebar */}
             {sidebarOpen && (
                 <div className="sidebar-inner p-4">

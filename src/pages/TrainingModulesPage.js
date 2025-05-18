@@ -5,6 +5,7 @@ import '../styles/TrainingModulesPage.css';
 import axios from 'axios';
 import hamburgerIcon from '../images/menu.png';
 import { FaFilePdf, FaFileImage, FaVideo, FaFileAlt } from 'react-icons/fa';
+import Chatbot from '../components/Chatbox';
 
 function TrainingModulesPage() {
     const [modules, setModules] = useState([]);
@@ -177,7 +178,7 @@ function TrainingModulesPage() {
                     </nav>
                 </div>
             )}
-
+            <Chatbot />
             <div className="modules-main-content">
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
