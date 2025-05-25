@@ -173,7 +173,7 @@ function TrainingModulesPage() {
                         <Link className="nav-link" to="/main">Home</Link>
                         <Link className="nav-link" to="/organization">People & groups</Link>
                         <Link className="nav-link active" to="/modules">My courses</Link>
-                        <Link className="nav-link" to="#">FAQs</Link>
+                        <Link className="nav-link" to="/faq">FAQs</Link>
                         {isManager && <Link className="nav-link" to="/uploads">My uploads</Link>}
                     </nav>
                 </div>

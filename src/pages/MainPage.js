@@ -105,7 +105,7 @@ function MainPage() {
                 <Link className="nav-link active sidebar-link" to="#">Home</Link>
                 <Link className="nav-link sidebar-link" to="/organization">People & groups</Link>
                 <Link className="nav-link sidebar-link active-link" to="/modules">My courses</Link>
-                <Link className="nav-link sidebar-link" to="#">FAQs</Link>
+                <Link className="nav-link sidebar-link" to="/faq">FAQs</Link>
                 {isManager && (
                 <Link className="nav-link sidebar-link" to="/uploads">My uploads</Link>
                 )}

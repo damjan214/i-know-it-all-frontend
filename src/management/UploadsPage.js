@@ -96,9 +96,9 @@ function UploadsPage() {
             <div className="sidebar-inner p-4">
             <nav className="nav flex-column">
                 <Link className="nav-link sidebar-link" to="/main">Home</Link>
-                <Link className="nav-link sidebar-link" to="#">People & groups</Link>
+                <Link className="nav-link sidebar-link" to="/organization">People & groups</Link>
                 <Link className="nav-link sidebar-link" to="/modules">My courses</Link>
-                <Link className="nav-link sidebar-link" to="#">FAQs</Link>
+                <Link className="nav-link sidebar-link" to="/faq">FAQs</Link>
                 <Link className="nav-link sidebar-link active-link" to="/uploads">My uploads</Link>
             </nav>
             </div>

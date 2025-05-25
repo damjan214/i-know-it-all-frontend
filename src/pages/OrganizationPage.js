@@ -17,45 +17,12 @@ function OrganizationPage() {
 
     const user = JSON.parse(localStorage.getItem('user'));
     const [isManager, setIsManager] = useState(false);
-    const [tags, setTags] = useState([]);
-    const [modules, setModules] = useState([]);
     const [userId, setUserId] = useState(null);
-    const [selectedModule, setSelectedModule] = useState(null);
 
     const handleLogout = () => {
         navigate('/login');
     };
 
-    const fetchModules = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/documents/');
-            setModules(response.data);
-            if (response.data.length > 0) {
-                handleModuleClick(response.data[0].id);
-            }
-        } catch (error) {
-            console.error("Failed to fetch documents:", error);
-        }
-    };
-
-    const fetchTags = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/tags');
-            setTags(response.data);
-        } catch (error) {
-            console.error("Failed to fetch tags:", error);
-        }
-    };
-
-    const handleModuleClick = async (moduleId) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/documents/${moduleId}`);
-            console.log("Fetched module with tags:", response.data);
-            setSelectedModule(response.data);
-        } catch (error) {
-            console.error("Failed to fetch module details:", error);
-        }
-    };
 
     const toggleManager = (id) => {
         setExpandedManagers(prev => ({
@@ -65,9 +32,7 @@ function OrganizationPage() {
     };
 
     useEffect(() => {
-        fetchModules();
-        fetchTags();
-
+        
         if (user) {
             axios.get(`http://localhost:8080/api/users/name/${user}`)
                 .then(res => {
@@ -111,7 +76,7 @@ function OrganizationPage() {
                         <Link className="nav-link" to="/main">Home</Link>
                         <Link className="nav-link active" to="/organization">People & groups</Link>
                         <Link className="nav-link" to="/modules">My courses</Link>
-                        <Link className="nav-link" to="#">FAQs</Link>
+                        <Link className="nav-link" to="/faq">FAQs</Link>
                         {isManager && <Link className="nav-link" to="/uploads">My uploads</Link>}
                     </nav>
                 </div>
