@@ -9,6 +9,7 @@ import TrainingModulesPage from "./pages/TrainingModulesPage";
 import UploadsPage from "./management/UploadsPage";
 import MyAccountPage from './pages/MyAccountPage';
 import OrganizationPage from './pages/OrganizationPage';
+import FAQPage from './pages/FAQPage';
 
 
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/uploads" element={<UploadsPage />} />
           <Route path="/account" element={<MyAccountPage />} />
           <Route path="/organization" element={<OrganizationPage />} />
+          <Route path="/faq" element={<FAQPage/>} />
         </Routes>
       </Router>
   );
