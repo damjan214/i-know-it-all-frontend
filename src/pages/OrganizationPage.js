@@ -143,6 +143,7 @@ function OrganizationPage() {
                                         <div key={dept} className="mb-5">
                                             <h4 className="mb-3" style={{ color: '#6b4eff' }}>{dept} Department</h4>
 
+                                            {/* Managers */}
                                             {managers.length === 0 ? (
                                                 <p><em>No managers in this department.</em></p>
                                             ) : (
@@ -186,6 +187,25 @@ function OrganizationPage() {
                                                         )}
                                                     </div>
                                                 ))
+                                            )}
+
+                                            {/* Employees shown if no managers */}
+                                            {managers.length === 0 && employees.length > 0 && (
+                                                <div className="ms-4 mt-2">
+                                                    <h6 className="text-muted">Employees:</h6>
+                                                    <div className="row g-2">
+                                                        {employees.map(employee => (
+                                                            <div className="col-md-4" key={employee.id}>
+                                                                <div className="card h-100 shadow-sm">
+                                                                    <div className="card-body">
+                                                                        <h6 className="card-title mb-1">{employee.name}</h6>
+                                                                        <small className="text-secondary">Employee</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
                                     );
