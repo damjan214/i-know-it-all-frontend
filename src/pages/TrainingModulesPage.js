@@ -84,7 +84,7 @@ function TrainingModulesPage() {
                     alert('Failed to filter by tags.');
                     console.error("Error filtering by tags:", error);
                 }
-            } 
+            }
         } catch (error) {
             alert('An unexpected error occurred.');
             console.error("Unexpected error in handleSearch:", error);
@@ -196,7 +196,7 @@ function TrainingModulesPage() {
                         <input
                             type="text"
                             className="form-control me-2"
-                            placeholder="Search..."
+                            placeholder="Search by tags(keywords)... "
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -205,6 +205,9 @@ function TrainingModulesPage() {
                 </div>
 
                 {/* Tag buttons */}
+                <div className="mb-2">
+                    <strong>Filter by Tags:</strong>
+                </div>
                 <div className="d-flex flex-wrap mb-4">
                     {tags.slice(0, showAllTags ? tags.length : 8).map((tag, index) => (
                         <button
@@ -261,7 +264,7 @@ function TrainingModulesPage() {
                         <div className="modules-details d-flex flex-column align-items-center p-4">
                             {selectedModule ? (
                                 <>
-                                     <div className="d-flex align-items-center mb-3">
+                                    <div className="d-flex align-items-center mb-3">
                                         {getFileTypeIcon(selectedModule.fileType)}
                                         <h4 className="ms-3">{selectedModule.title}</h4>
                                     </div>
